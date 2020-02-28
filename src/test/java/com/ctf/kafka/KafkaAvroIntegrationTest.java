@@ -3,6 +3,7 @@ package com.ctf.kafka;
 import com.ctf.kafka.processor.MessageStore;
 import com.ctf.kafka.service.ProducerService;
 import org.awaitility.Awaitility;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,6 +31,7 @@ class KafkaAvroIntegrationTest {
     private MessageStore messageStore;
 
     @Test
+    @DisplayName("A message is sent, consumed and stored successfully")
     public void sentMessageIsSuccessfullyProcessed() {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT);
         thenMessageStoreShouldHaveCount(1);
