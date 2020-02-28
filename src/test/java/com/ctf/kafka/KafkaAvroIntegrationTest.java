@@ -1,6 +1,6 @@
 package com.ctf.kafka;
 
-import com.ctf.kafka.processor.MessageStore;
+import com.ctf.kafka.store.MessageStore;
 import com.ctf.kafka.service.ProducerService;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.DisplayName;

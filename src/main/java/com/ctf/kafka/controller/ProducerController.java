@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/kafka")
@@ -21,7 +22,7 @@ public class ProducerController {
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> publish() {
-        producerService.process("Hello World");
+        producerService.process("Hello World " + UUID.randomUUID().toString());
         return Collections.singletonMap("result", "successful");
     }
 

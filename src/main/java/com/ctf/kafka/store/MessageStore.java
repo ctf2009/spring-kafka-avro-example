@@ -1,4 +1,4 @@
-package com.ctf.kafka.processor;
+package com.ctf.kafka.store;
 
 import ctf.avro.Message;
 import org.slf4j.Logger;

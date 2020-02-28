@@ -10,6 +10,10 @@ spring:
         registry:
           url: http://localhost:8081
 
+      specific:
+        avro:
+          reader: true
+
     listener:
       missing-topics-fatal: false
 

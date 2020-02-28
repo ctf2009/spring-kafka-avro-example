@@ -1,6 +1,6 @@
 package com.ctf.kafka.listener;
 
-import com.ctf.kafka.processor.MessageStore;
+import com.ctf.kafka.store.MessageStore;
 import ctf.avro.Message;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
