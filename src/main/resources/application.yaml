@@ -1,0 +1,31 @@
+server:
+  port: 9000
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092
+
+    properties:
+      schema:
+        registry:
+          url: http://localhost:8081
+
+    listener:
+      missing-topics-fatal: false
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+
+    consumer:
+      group-id: testing-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+
+kafka:
+  producer:
+    topic: test-topic
+
+  consumer:
+    topic: test-topic

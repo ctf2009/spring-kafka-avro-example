@@ -1,0 +1,8 @@
+{"namespace": "ctf.avro",
+ "type": "record",
+ "name": "Message",
+ "fields": [
+     {"name": "priority", "type": "int"},
+     {"name": "content", "type": ["string", "null"]}
+ ]
+}
