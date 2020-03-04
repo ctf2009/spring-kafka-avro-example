@@ -52,6 +52,6 @@ class KafkaAvroIntegrationTest {
 
     private void thenMessageStoreShouldHaveCount(int messageCount) {
         Awaitility.await().atMost(Duration.of(10, SECONDS)).until(() ->
-                this.messageStore.getMessageCount() == messageCount);
+                this.messageStore.count() == messageCount);
     }
 }

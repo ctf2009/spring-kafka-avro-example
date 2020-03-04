@@ -1,6 +1,7 @@
 package com.ctf.kafka.listener;
 
 import com.ctf.kafka.store.MessageStore;
+import com.ctf.kafka.store.model.MessageEntity;
 import ctf.avro.Message;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
@@ -26,7 +27,18 @@ public class MessageListener {
                 record.offset());
 
         LOG.info("Received Message: Meta:{}, Value: {}", recordStringMeta, record.value());
-        messageStore.store(record.value());
+
+        final MessageEntity saved = messageStore.save(toMessageEntity(record.value()));
+
+        LOG.info("Stored Message with Id: {}", saved.getId());
+    }
+
+    private MessageEntity toMessageEntity(final Message message) {
+        final MessageEntity entity = new MessageEntity();
+        entity.setPriority(message.getPriority());
+        entity.setMessage(message.getContent());
+
+        return entity;
     }
 
 }
