@@ -1,6 +1,19 @@
 # spring-kafka-avro-example
 A simple demo of Spring Boot integration with Kafka / Schema Repo / Avro
 
+This project currently demonstrates the following
+
+- Using a @KafkaListener annotation
+- Using Spring Kafka Auto Configuration
+- Generation of Avro Classes using Gradle
+- Testing using Embedded Kafka
+- Testing with stubbing a Schema Repository
+- Demonstrating the ability to Pause / Resume a Message Listener Container
+
+The following are in progress:
+
+- Error Handling using the new abilities of the SeekToCurrentErrorHandler
+- Switching to Manual Acknowledgements and integrating this with the Error Handler
 
 ### Publishing
 
