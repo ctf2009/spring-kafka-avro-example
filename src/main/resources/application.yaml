@@ -53,5 +53,5 @@ kafka:
 
 retry:
   consumer:
-    backoff-ms: 1000
-    max-retries: 3
+    backoff-ms: 5000
+    max-attempts: 5
