@@ -10,7 +10,7 @@ buildscript {
 plugins {
 	id 'org.springframework.boot' version '2.2.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
-	id 'java'
+	id 'java-library'
 	id 'idea'
 }
 
@@ -18,7 +18,10 @@ apply plugin: "com.commercehub.gradle.plugin.avro"
 
 group = 'com.ctf'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_11
+}
 
 configurations {
 	compileOnly {

@@ -9,17 +9,21 @@ This project currently demonstrates the following
 - Testing using Embedded Kafka
 - Testing with stubbing a Schema Repository
 - Demonstrating the ability to Pause / Resume a Message Listener Container
-
-The following are in progress:
-
-- Error Handling using the new abilities of the SeekToCurrentErrorHandler
-- Switching to Manual Acknowledgements and integrating this with the Error Handler
+- Demonstrating the new SeekToCurrentErrorHandler abilities to retry based on specific Exceptions
 
 ### Publishing
 
 You can publish a message using the producer endpoint
 
-`GET /producer/publish` - Produces a simple message with a random UUID
+`GET /producer/successful` - Produces a simple message with a random UUID
+
+##### Error Demonstration
+
+`GET /error/recoverable` - Produces a simple message which forces a RecoverableException. You will be able to see the message attempted to be retried
+
+`GET /error/recoverable/nested` - Produces a simple message which throws an Exception with the cause being a RecoverableException. You will be able to see the message attmpeted to be retried
+
+`GET /error/unrecoverable` - Produces a simple message which throws an UnrecoverableException. The exception is immediately handled and not retried
 
 ### Consumer
 

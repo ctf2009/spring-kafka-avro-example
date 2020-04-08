@@ -47,7 +47,7 @@ class KafkaAvroIntegrationTest {
     }
 
     private void givenMessageIsProduced(final String messageContent) {
-        this.producerService.process(messageContent);
+        this.producerService.process(messageContent, null);
     }
 
     private void thenMessageStoreShouldHaveCount(int messageCount) {
