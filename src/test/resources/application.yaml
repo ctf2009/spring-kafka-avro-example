@@ -21,6 +21,12 @@ spring:
         registry:
           url: http://dummy
 
+      spring:
+        deserializer:
+          value:
+            delegate:
+              class: com.ctf.kafka.test.support.avro.CustomKafkaAvroMessageDeserializer
+
       specific:
         avro:
           reader: true
@@ -37,7 +43,7 @@ spring:
       group-id: testing-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: com.ctf.kafka.test.support.avro.CustomKafkaAvroMessageDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer2
 
 retry:
   consumer:
