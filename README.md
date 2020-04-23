@@ -12,7 +12,7 @@ This project currently demonstrates the following
 - Demonstrating the new SeekToCurrentErrorHandler abilities to retry based on specific Exceptions
 - Added Example of using ErrorHandlingDeserializer (See Section Below)
 
-### Publishing
+## Publishing
 
 You can publish a message using the producer endpoint
 
@@ -26,7 +26,7 @@ You can publish a message using the producer endpoint
 
 `GET /error/unrecoverable` - Produces a simple message which throws an UnrecoverableException. The exception is immediately handled and not retried
 
-### Consumer
+## Consumer
 
 You are able to pause, resume and check the pause status using the consumers endpoint
 
@@ -38,7 +38,7 @@ You are able to pause, resume and check the pause status using the consumers end
 
 **NOTE:** The pause and resume return `202` because it may take some time to fully complete the action
 
-### Kafka Commands
+## Kafka Commands
 
 When running with the docker compose, you can run commands like the following to obtain information from kafka
 
@@ -50,7 +50,7 @@ When running with the docker compose, you can run commands like the following to
 
 `docker run --net=host confluentinc/cp-server:5.4.0 /usr/bin/kafka-topics --topic test-topic --describe  --bootstrap-server localhost:9092`
 
-### ErrorHandlingDeserializer
+## ErrorHandlingDeserializer
 
 ErrorHandlingDeserializer is documented [here](https://docs.spring.io/spring-kafka/reference/html/#error-handling-deserializer)
 
