@@ -82,11 +82,3 @@ Caused by: org.apache.kafka.common.errors.SerializationException: Error deserial
 Caused by: org.apache.kafka.common.errors.SerializationException: Error deserializing Avro message for id -1
 Caused by: org.apache.kafka.common.errors.SerializationException: Unknown magic byte!
 ```
-
-
-
-
- 
-
-
-

@@ -8,7 +8,7 @@ buildscript {
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.3.0.RELEASE'
+	id 'org.springframework.boot' version '2.4.0'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java-library'
 	id 'idea'
@@ -36,7 +36,7 @@ repositories {
 
 dependencies {
 	implementation "org.apache.avro:avro:1.9.2"
-	implementation 'io.confluent:kafka-avro-serializer:5.4.0'
+	implementation 'io.confluent:kafka-avro-serializer:5.5.0'
 
 	implementation 'org.postgresql:postgresql'
 

@@ -19,13 +19,13 @@ spring:
     properties:
       schema:
         registry:
-          url: http://dummy
+          url: mock://test.scope
 
       spring:
         deserializer:
           value:
             delegate:
-              class: com.ctf.kafka.test.support.avro.CustomKafkaAvroMessageDeserializer
+              class: io.confluent.kafka.serializers.KafkaAvroDeserializer
 
       specific:
         avro:
@@ -37,13 +37,13 @@ spring:
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: com.ctf.kafka.test.support.avro.CustomKafkaAvroSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
 
     consumer:
       group-id: testing-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer2
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
 
 retry:
   consumer:
