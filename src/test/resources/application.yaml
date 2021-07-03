@@ -53,6 +53,7 @@ retry:
 kafka:
   producer:
     topic: test-topic
+    auto-producer-enabled: false
 
   consumer:
     topic: test-topic

@@ -1,5 +1,8 @@
 package com.ctf.kafka.store.model;
 
+import lombok.Builder;
+import lombok.Data;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Data
+@Builder
 @Entity
 @Table(name = "messages")
 public class MessageEntity {
@@ -21,27 +26,13 @@ public class MessageEntity {
     @Column(name = "MESSAGE", nullable = false)
     private String message;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "KAFKA_TOPIC")
+    private String topic;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @Column(name = "KAFKA_PARTITION")
+    private Integer partition;
 
-    public Integer getPriority() {
-        return priority;
-    }
+    @Column(name = "KAFKA_OFFSET")
+    private Long offset;
 
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

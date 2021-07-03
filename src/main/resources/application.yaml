@@ -53,6 +53,7 @@ spring:
 kafka:
   producer:
     topic: test-topic
+    auto-producer-enabled: true
 
   consumer:
     topic: test-topic
