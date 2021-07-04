@@ -57,5 +57,6 @@ kafka:
 
   consumer:
     topic: test-topic
+    replay-enabled: true
 
 

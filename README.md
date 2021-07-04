@@ -26,6 +26,12 @@ You can publish a message using the producer endpoint
 
 `GET /error/unrecoverable` - Produces a simple message which throws an UnrecoverableException. The exception is immediately handled and not retried
 
+## Replay
+
+You can replay a message by using the replay endpoint
+
+`GET /replay/test-topic-0-10` - Attempts to retry processing of offset 10 on partition 0 for the 'test-topic'
+
 ## Consumer
 
 You are able to pause, resume and check the pause status using the consumers endpoint

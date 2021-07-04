@@ -38,7 +38,7 @@ spring:
     listener:
       missing-topics-fatal: false
       ack-mode: MANUAL_IMMEDIATE
-      concurrency: 2
+      concurrency: 1
 
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -57,6 +57,7 @@ kafka:
 
   consumer:
     topic: test-topic
+    replay-enabled: true
 
 retry:
   consumer:

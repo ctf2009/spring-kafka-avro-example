@@ -1,5 +1,6 @@
 package com.ctf.kafka.listener;
 
+import com.ctf.kafka.model.KafkaMeta;
 import com.ctf.kafka.processor.MessageProcessor;
 import ctf.avro.Message;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,8 @@ public class MessageListener {
 
     @KafkaListener(topics = "${kafka.consumer.topic}")
     public void listen(ConsumerRecord<String, Message> consumerRecord, final Acknowledgment acknowledgment) {
-
-        final var recordStringMeta = String.format("%s-%d-%d",
-                consumerRecord.topic(),
-                consumerRecord.partition(),
-                consumerRecord.offset());
-
-        log.info("Received Message: Meta:{}, Value: {}", recordStringMeta, consumerRecord.value());
+        final var kafkaMeta = KafkaMeta.fromConsumerRecord(consumerRecord);
+        log.info("Received Message: Meta:{}, Value: {}", kafkaMeta, consumerRecord.value());
         this.messageProcessor.processMessage(consumerRecord);
         acknowledgment.acknowledge();
     }

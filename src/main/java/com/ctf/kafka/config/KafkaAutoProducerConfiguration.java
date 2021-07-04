@@ -20,7 +20,7 @@ public class KafkaAutoProducerConfiguration {
     private final ProducerService producerService;
     private final AtomicLong counter = new AtomicLong();
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(fixedDelay = 10000)
     public void scheduleTask() {
         log.info("Scheduling Task Running");
         final long count = counter.incrementAndGet();
