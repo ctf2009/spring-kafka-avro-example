@@ -6,4 +6,8 @@ public class UnrecoverableException extends RuntimeException {
         super(message);
     }
 
+    public UnrecoverableException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
+
 }

@@ -27,7 +27,7 @@ public class KafkaListenerConfiguration {
     private int retryCount;
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
+    public ConcurrentKafkaListenerContainerFactory<Object, Object> kafkaListenerContainerFactory(
             ConcurrentKafkaListenerContainerFactoryConfigurer factoryConfigurer,
             ConsumerFactory<Object, Object> kafkaConsumerFactory) {
 
@@ -40,11 +40,10 @@ public class KafkaListenerConfiguration {
     }
 
     private SeekToCurrentErrorHandler errorHandler() {
-        final SeekToCurrentErrorHandler seekToCurrentErrorHandler =
-                new SeekToCurrentErrorHandler((record, exception) -> {
-                    LOG.warn("Handing Error for record {} with exception {}", record, exception.getClass());
-                                        // Do any further processing here, Once complete, the recovered Error is committed
-                }, new FixedBackOff(backoffMillis, retryCount));
+        final var seekToCurrentErrorHandler = new SeekToCurrentErrorHandler((consumerRecord, exception) ->
+                        LOG.warn("Handing Error for consumerRecord {} with exception {}", consumerRecord, exception.getClass()),
+                        // Do any further processing here, Once complete, the recovered Error is committed
+                        new FixedBackOff(backoffMillis, retryCount));
         seekToCurrentErrorHandler.setClassifications(exceptionClassifications(), false);
 
         // This is required to be set to true so that failures that are handled are committed

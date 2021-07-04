@@ -33,14 +33,14 @@ class KafkaAvroIntegrationTest {
 
     @Test
     @DisplayName("A message is sent, consumed and stored successfully")
-    public void sentMessageIsSuccessfullyProcessed() {
+    void sentMessageIsSuccessfullyProcessed() {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT);
         thenMessageStoreShouldHaveCount(1);
     }
 
     @Test
     @DisplayName("Multiple messages are sent, consumed and stored successfully")
-    public void multipleSentMessageIsSuccessfullyProcessed() {
+    void multipleSentMessageIsSuccessfullyProcessed() {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT);
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT);
         thenMessageStoreShouldHaveCount(2);

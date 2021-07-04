@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 @Service
 public class ProducerService {
@@ -32,7 +31,6 @@ public class ProducerService {
             message.setError(errorToThrow);
         }
 
-        LOG.info("Generated Message: [{}]", message);
         producer.send("test-topic", message.build());
     }
 

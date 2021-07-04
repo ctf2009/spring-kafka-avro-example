@@ -1,6 +1,5 @@
 package com.ctf.kafka;
 
-import com.ctf.kafka.exception.RecoverableException;
 import com.ctf.kafka.processor.MessageProcessor;
 import com.ctf.kafka.service.ProducerService;
 import com.ctf.kafka.store.MessageStore;
@@ -29,7 +28,7 @@ import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFOR
 @ExtendWith(MockitoExtension.class)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 @EnableAutoConfiguration(exclude = {HibernateJpaAutoConfiguration.class, JpaRepositoriesAutoConfiguration.class})
-public class ErrorHandlingIntegrationTest {
+class ErrorHandlingIntegrationTest {
 
     private static final String DEFAULT_MESSAGE_CONTENT = "This is a message";
 
@@ -44,7 +43,7 @@ public class ErrorHandlingIntegrationTest {
 
     @Test
     @DisplayName("RecoverableException is retried correct number of times")
-    public void recoverableExceptionIsRetriedCorrectNumberOfTimes() {
+    void recoverableExceptionIsRetriedCorrectNumberOfTimes() {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT, Error.RECOVERABLE);
 
         // 4 = Initial Attempt + 3 Retries
@@ -53,7 +52,7 @@ public class ErrorHandlingIntegrationTest {
 
     @Test
     @DisplayName("UnrecoverableException is never retried")
-    public void unrecoverableExceptionIsNeverRetried() {
+    void unrecoverableExceptionIsNeverRetried() {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT, Error.UNRECOVERABLE);
 
         // 1 = Initial Attempt + 0 Retries
@@ -62,7 +61,7 @@ public class ErrorHandlingIntegrationTest {
 
     @Test
     @DisplayName("Nested RecoverableException is retried correct number of times")
-    public void nestedRecoverableExceptionIsRetried() {
+    void nestedRecoverableExceptionIsRetried() {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT, Error.NESTED_RECOVERABLE);
 
         // 4 = Initial Attempt + 3 Retries
