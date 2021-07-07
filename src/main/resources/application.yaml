@@ -57,13 +57,11 @@ spring:
 kafka:
   producer:
     topic: test-topic
-<<<<<<< Updated upstream
-=======
     auto-producer-enabled: false
->>>>>>> Stashed changes
 
   consumer:
     topic: test-topic
+    replay-enabled: true
 
 retry:
   consumer:

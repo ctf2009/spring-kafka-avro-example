@@ -34,7 +34,7 @@ public class ReplayService {
 
         final var consumerRecord = getConsumerRecord(kafkaMeta);
         if (consumerRecord != null) {
-            checkConsumerRecordForDeserializationException(consumerRecord);
+            checkConsumerRecord(consumerRecord);
             processConsumerRecord(kafkaMeta, consumerRecord);
         } else {
             final var errorMessage = String.format("ConsumerRecord not found for KafkaMeta: %s", kafkaMeta);
@@ -67,6 +67,7 @@ public class ReplayService {
                     .orElse(null);
 
         } catch (final Exception exception) {
+            log.error("Exception whilst attempting to locate ConsumerRecord:", exception);
             final var errorMessage =
                     String.format("There was an Exception whilst attempting to locate the ConsumerRecord for KafkaMeta: %s", kafkaMeta);
 
@@ -85,7 +86,7 @@ public class ReplayService {
         }
     }
 
-    private void checkConsumerRecordForDeserializationException(final ConsumerRecord<String, Message> consumerRecord) {
+    private void checkConsumerRecord(final ConsumerRecord<String, Message> consumerRecord) {
         if (consumerRecord.value() == null) {
             final var logger = new LogAccessor(LogFactory.getLog(ReplayService.class));
             final var deserializationException =
