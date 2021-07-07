@@ -1,6 +1,7 @@
 package com.ctf.kafka.config;
 
 import com.ctf.kafka.exception.RecoverableException;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@RequiredArgsConstructor
 public class KafkaListenerConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaListenerConfiguration.class);
@@ -28,7 +30,7 @@ public class KafkaListenerConfiguration {
     private int retryCount;
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
+    public ConcurrentKafkaListenerContainerFactory<Object, Object> kafkaListenerContainerFactory(
             ConcurrentKafkaListenerContainerFactoryConfigurer factoryConfigurer,
             ConsumerFactory<Object, Object> kafkaConsumerFactory,
             ErrorHandler errorHandler) {
@@ -41,21 +43,13 @@ public class KafkaListenerConfiguration {
         return factory;
     }
 
-<<<<<<< Updated upstream
-    private SeekToCurrentErrorHandler errorHandler() {
-        final SeekToCurrentErrorHandler seekToCurrentErrorHandler =
-                new SeekToCurrentErrorHandler((record, exception) -> {
-                    LOG.warn("Handing Error for record {} with exception {}", record, exception.getClass());
-                                        // Do any further processing here, Once complete, the recovered Error is committed
-                }, new FixedBackOff(backoffMillis, retryCount));
-=======
     @Bean
     public ErrorHandler errorHandler() {
         final var seekToCurrentErrorHandler = new SeekToCurrentErrorHandler((consumerRecord, exception) ->
                         LOG.warn("Handing Error for consumerRecord {} with exception {}", consumerRecord, exception.getClass()),
                         // Do any further processing here, Once complete, the recovered Error is committed
                         new FixedBackOff(backoffMillis, retryCount));
->>>>>>> Stashed changes
+
         seekToCurrentErrorHandler.setClassifications(exceptionClassifications(), false);
 
         // This is required to be set to true so that failures that are handled are committed
