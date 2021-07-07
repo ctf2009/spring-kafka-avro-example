@@ -42,13 +42,19 @@ You are able to pause, resume and check the pause status using the consumers end
 
 When running with the docker compose, you can run commands like the following to obtain information from kafka
 
-`docker run --net=host confluentinc/cp-server:5.4.0 /usr/bin/kafka-consumer-groups --list --bootstrap-server localhost:9092`
+`docker run --net=host confluentinc/cp-server:5.5.3 /usr/bin/kafka-consumer-groups --list --bootstrap-server localhost:9092`
 
-`docker run --net=host confluentinc/cp-server:5.4.0 /usr/bin/kafka-consumer-groups --group testing-group --describe  --bootstrap-server localhost:9092`
+`docker run --net=host confluentinc/cp-server:5.5.3 /usr/bin/kafka-consumer-groups --group testing-group --describe  --bootstrap-server localhost:9092`
 
-`docker run --net=host confluentinc/cp-server:5.4.0 /usr/bin/kafka-topics --list --bootstrap-server localhost:9092`
+`docker run --net=host confluentinc/cp-server:5.5.3 /usr/bin/kafka-topics --list --bootstrap-server localhost:9092`
 
-`docker run --net=host confluentinc/cp-server:5.4.0 /usr/bin/kafka-topics --topic test-topic --describe  --bootstrap-server localhost:9092`
+`docker run --net=host confluentinc/cp-server:5.5.3 /usr/bin/kafka-topics --topic test-topic --describe  --bootstrap-server localhost:9092`
+
+`docker run --net=host confluentinc/cp-server:5.5.3 /usr/bin/kafka-consumer-groups --group testing-group --describe  --bootstrap-server localhost:9092`
+
+`docker run --net=host confluentinc/cp-server:5.5.3 /usr/bin/kafka-consumer-groups --bootstrap-server localhost:9092 --group testing-group --topic test-topic --reset-offsets --to-earliest`
+
+`docker run --net=host confluentinc/cp-server:5.5.3 /usr/bin/kafka-consumer-groups --bootstrap-server localhost:9092 --group testing-group --topic test-topic --reset-offsets --to-earliest --execute`
 
 ## ErrorHandlingDeserializer
 
@@ -60,7 +66,7 @@ To show the ErrorHandlingDeserializer in action, you can fire an arbitary payloa
 
 Once everything is up, run the following command
 
-`docker run --net=host confluentinc/cp-server:5.4.0  sh -c '/bin/echo "Invalid Payload" | /usr/bin/kafka-console-producer kafka-console-producer.sh --broker-list localhost:9092 --topic test-topic'`
+`docker run --net=host confluentinc/cp-server:5.5.3  sh -c '/bin/echo "Invalid Payload" | /usr/bin/kafka-console-producer kafka-console-producer.sh --broker-list localhost:9092 --topic test-topic'`
 
 You will see that the Error is handled correctly
 
@@ -82,3 +88,9 @@ Caused by: org.apache.kafka.common.errors.SerializationException: Error deserial
 Caused by: org.apache.kafka.common.errors.SerializationException: Error deserializing Avro message for id -1
 Caused by: org.apache.kafka.common.errors.SerializationException: Unknown magic byte!
 ```
+
+## Schema Registry Basic Auth
+
+In order to populate the password-file correctly you can use the Password Utility to generate the hashed password as shown below
+
+`docker run --net=host confluentinc/cp-schema-registry:5.5.3 /usr/bin/schema-registry-run-class org.eclipse.jetty.util.security.Password user password`

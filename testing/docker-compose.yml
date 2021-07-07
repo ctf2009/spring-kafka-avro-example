@@ -2,7 +2,7 @@
 version: '2'
 services:
   zookeeper:
-    image: confluentinc/cp-zookeeper:5.4.0
+    image: confluentinc/cp-zookeeper:5.5.3
     hostname: zookeeper
     container_name: zookeeper
     ports:
@@ -12,7 +12,7 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
 
   broker:
-    image: confluentinc/cp-server:5.4.0
+    image: confluentinc/cp-server:5.5.3
     hostname: broker
     container_name: broker
     depends_on:
@@ -29,7 +29,7 @@ services:
       KAFKA_NUM_PARTITIONS: 2
 
   schema-registry:
-    image: confluentinc/cp-schema-registry:5.4.0
+    image: confluentinc/cp-schema-registry:5.5.3
     hostname: schema-registry
     container_name: schema-registry
     depends_on:
@@ -40,6 +40,13 @@ services:
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: 'zookeeper:2181'
+      SCHEMA_REGISTRY_OPTS: '-Djava.security.auth.login.config=/etc/schema-registry/jaas_config.conf'
+      SCHEMA_REGISTRY_AUTHENTICATION_METHOD: BASIC
+      SCHEMA_REGISTRY_AUTHENTICATION_ROLES: rw
+      SCHEMA_REGISTRY_AUTHENTICATION_REALM: 'SchemaRegistry-Props'
+    volumes:
+      - ./schema-registry/jaas_config.conf:/etc/schema-registry/jaas_config.conf
+      - ./schema-registry/password-file:/etc/schema-registry/password-file
 
   postgres:
     image: postgres:9.6.17

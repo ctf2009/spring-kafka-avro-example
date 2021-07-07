@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.listener.ErrorHandler;
 import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
 
@@ -29,22 +30,32 @@ public class KafkaListenerConfiguration {
     @Bean
     public ConcurrentKafkaListenerContainerFactory<?, ?> kafkaListenerContainerFactory(
             ConcurrentKafkaListenerContainerFactoryConfigurer factoryConfigurer,
-            ConsumerFactory<Object, Object> kafkaConsumerFactory) {
+            ConsumerFactory<Object, Object> kafkaConsumerFactory,
+            ErrorHandler errorHandler) {
 
         ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factoryConfigurer.configure(factory, kafkaConsumerFactory);
 
         // No Longer Need to use RetryTemplate & Recovery Callback
-        factory.setErrorHandler(errorHandler());
+        factory.setErrorHandler(errorHandler);
         return factory;
     }
 
+<<<<<<< Updated upstream
     private SeekToCurrentErrorHandler errorHandler() {
         final SeekToCurrentErrorHandler seekToCurrentErrorHandler =
                 new SeekToCurrentErrorHandler((record, exception) -> {
                     LOG.warn("Handing Error for record {} with exception {}", record, exception.getClass());
                                         // Do any further processing here, Once complete, the recovered Error is committed
                 }, new FixedBackOff(backoffMillis, retryCount));
+=======
+    @Bean
+    public ErrorHandler errorHandler() {
+        final var seekToCurrentErrorHandler = new SeekToCurrentErrorHandler((consumerRecord, exception) ->
+                        LOG.warn("Handing Error for consumerRecord {} with exception {}", consumerRecord, exception.getClass()),
+                        // Do any further processing here, Once complete, the recovered Error is committed
+                        new FixedBackOff(backoffMillis, retryCount));
+>>>>>>> Stashed changes
         seekToCurrentErrorHandler.setClassifications(exceptionClassifications(), false);
 
         // This is required to be set to true so that failures that are handled are committed

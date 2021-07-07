@@ -21,6 +21,9 @@ spring:
     bootstrap-servers: localhost:9092
 
     properties:
+      basic.auth:
+        credentials.source: USER_INFO
+        user.info: user:password
       schema:
         registry:
           url: http://localhost:8081
@@ -47,12 +50,17 @@ spring:
     consumer:
       group-id: testing-group
       auto-offset-reset: earliest
+      max-poll-records: 1
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
 
 kafka:
   producer:
     topic: test-topic
+<<<<<<< Updated upstream
+=======
+    auto-producer-enabled: false
+>>>>>>> Stashed changes
 
   consumer:
     topic: test-topic
