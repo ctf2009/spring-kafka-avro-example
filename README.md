@@ -95,8 +95,19 @@ Caused by: org.apache.kafka.common.errors.SerializationException: Error deserial
 Caused by: org.apache.kafka.common.errors.SerializationException: Unknown magic byte!
 ```
 
-## Schema Registry Basic Auth
+## Schema Registry
+
+##### Basic Auth
+The Schema Registry in the `docker-compose.yml` file is set up to use Basic Auth.
 
 In order to populate the password-file correctly you can use the Password Utility to generate the hashed password as shown below
 
 `docker run --net=host confluentinc/cp-schema-registry:5.5.3 /usr/bin/schema-registry-run-class org.eclipse.jetty.util.security.Password user password`
+
+
+##### Manually Adding Schemas
+The Consumer / Producer can be set to not auto register the schema (This is usually something that would be disabled in Prod)
+If you choose to disable auto register schema you will need to manually add the schemas to the registry
+
+Original Schema - TODO
+Forward Compatibility evolution of the Schema - TODO

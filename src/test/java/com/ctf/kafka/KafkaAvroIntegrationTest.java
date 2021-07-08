@@ -11,12 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.Duration;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
+@ActiveProfiles("integration")
 @SpringBootTest
 @EmbeddedKafka
 @ExtendWith(MockitoExtension.class)

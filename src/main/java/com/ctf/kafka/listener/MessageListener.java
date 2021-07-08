@@ -1,5 +1,7 @@
 package com.ctf.kafka.listener;
 
+import com.ctf.kafka.exception.RecoverableException;
+import com.ctf.kafka.exception.UnrecoverableException;
 import com.ctf.kafka.model.KafkaMeta;
 import com.ctf.kafka.processor.MessageProcessor;
 import ctf.avro.Message;
@@ -17,12 +19,24 @@ public class MessageListener {
 
     private final MessageProcessor messageProcessor;
 
-    @KafkaListener(topics = "${kafka.consumer.topic}")
-    public void listen(ConsumerRecord<String, Message> consumerRecord, final Acknowledgment acknowledgment) {
+    @KafkaListener(topics = "${kafka.topics.main-topic}")
+    public void listen(final ConsumerRecord<String, Message> consumerRecord,
+                       final Acknowledgment acknowledgment) {
         final var kafkaMeta = KafkaMeta.fromConsumerRecord(consumerRecord);
         log.info("Received Message: Meta:{}, Value: {}", kafkaMeta, consumerRecord.value());
-        this.messageProcessor.processMessage(consumerRecord);
+
+        process(consumerRecord);
         acknowledgment.acknowledge();
+    }
+
+    private void process(final ConsumerRecord<String, Message> consumerRecord) {
+        try {
+            this.messageProcessor.processMessage(consumerRecord);
+        } catch (final RecoverableException | UnrecoverableException e) {
+            throw e;
+        } catch (final Exception e) {
+            throw new UnrecoverableException("Unrecoverable Exception: ", e);
+        }
     }
 
 }

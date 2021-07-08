@@ -21,6 +21,8 @@ spring:
     bootstrap-servers: localhost:9092
 
     properties:
+      use.latest.version: false
+      auto.register.schemas: true
       basic.auth:
         credentials.source: USER_INFO
         user.info: user:password
@@ -55,13 +57,14 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
 
 kafka:
-  producer:
-    topic: test-topic
-    auto-producer-enabled: false
+  replay-enabled: true
 
-  consumer:
-    topic: test-topic
-    replay-enabled: true
+  topics:
+    main-topic: test-topic
+    forwarding-topic: forwarding-topic
+
+  producer:
+    auto-producer-enabled: false
 
 retry:
   consumer:

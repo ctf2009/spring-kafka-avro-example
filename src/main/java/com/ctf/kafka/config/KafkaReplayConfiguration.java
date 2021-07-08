@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 @Configuration
-@ConditionalOnProperty(name = "kafka.consumer.replay-enabled", havingValue = "true")
+@ConditionalOnProperty(name = "kafka.replay-enabled", havingValue = "true")
 public class KafkaReplayConfiguration {
 
     @Bean
     public ReplayService replayService(final KafkaProperties kafkaProperties,
                                        final MessageProcessor messageProcessor,
-                                       @Value("${kafka.consumer.topic}") final String topic) {
+                                       @Value("${kafka.topics.main-topic}") final String topic) {
         final var consumerFactory = consumerFactory(kafkaProperties);
         return new ReplayService(consumerFactory, messageProcessor, topic);
     }

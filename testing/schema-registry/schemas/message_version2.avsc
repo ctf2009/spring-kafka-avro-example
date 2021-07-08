@@ -5,6 +5,7 @@
      {"name": "priority", "type": "int"},
      {"name": "content", "type": ["string", "null"]},
      {"name": "Error", "type": ["null", { "type": "enum", "name": "Error", "symbols": ["RECOVERABLE", "UNRECOVERABLE", "NESTED_RECOVERABLE"] }], "default": null },
-     {"name": "forward", "type": "boolean", "default": false}
+     {"name": "forward", "type": "boolean", "default": false},
+     {"name": "newOptionalField", "type": ["string", "null"]}
  ]
 }

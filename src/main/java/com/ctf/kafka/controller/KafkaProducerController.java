@@ -23,7 +23,13 @@ public class KafkaProducerController {
 
     @GetMapping(path = "/successful", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, String> successful() {
-        producerService.process(MESSAGE_PREFIX + UUID.randomUUID().toString(), null);
+        producerService.process(MESSAGE_PREFIX + UUID.randomUUID(), null);
+        return successfulResponse();
+    }
+
+    @GetMapping(path = "/successful/forward", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, String> successfulForward() {
+        producerService.process(MESSAGE_PREFIX + UUID.randomUUID(), null, true);
         return successfulResponse();
     }
 

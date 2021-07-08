@@ -2,25 +2,29 @@ package com.ctf.kafka.service;
 
 import ctf.avro.Error;
 import ctf.avro.Message;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class ProducerService {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProducerService.class);
 
-    @Value("${kafka.producer.topic}")
+    @Value("${kafka.topics.main-topic}")
     private String producerTopic;
 
-    @Autowired
-    private KafkaTemplate<String, Message> producer;
+    private final KafkaTemplate<String, Message> producer;
 
     public void process(final String messageContent, final Error errorToThrow) {
+        process(messageContent, errorToThrow, false);
+    }
+
+    public void process(final String messageContent, final Error errorToThrow, final boolean setForwarding) {
         LOG.info("Received message to process [{}]", messageContent);
 
         final Message.Builder message = Message.newBuilder()
@@ -31,7 +35,15 @@ public class ProducerService {
             message.setError(errorToThrow);
         }
 
-        producer.send("test-topic", message.build());
+        if (setForwarding) {
+            message.setForward(true);
+        }
+
+        process(message.build(), producerTopic);
+    }
+
+    public void process(final Message message, final String topic) {
+        producer.send(topic, message);
     }
 
 }

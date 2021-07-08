@@ -3,12 +3,15 @@ package com.ctf.kafka.processor;
 import com.ctf.kafka.exception.CustomRuntimeException;
 import com.ctf.kafka.exception.RecoverableException;
 import com.ctf.kafka.exception.UnrecoverableException;
+import com.ctf.kafka.service.ProducerService;
 import com.ctf.kafka.store.MessageStore;
 import com.ctf.kafka.store.model.MessageEntity;
 import ctf.avro.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -19,6 +22,10 @@ import javax.transaction.Transactional;
 public class MessageProcessor {
 
     private final MessageStore messageStore;
+    private final ProducerService producerService;
+
+    @Value("${kafka.topics.forwarding-topic}")
+    private String forwardingTopic;
 
     @Transactional
     public void processMessage(final ConsumerRecord<String, Message> consumerRecord) {
@@ -41,6 +48,11 @@ public class MessageProcessor {
         } else {
             final MessageEntity saved = messageStore.save(toMessageEntity(consumerRecord));
             log.info("Stored Message {}", saved);
+
+            if (consumerRecord.value().getForward()) {
+                log.info("Message is flagged to be sent to the forwarding topic");
+                producerService.process(consumerRecord.value(),forwardingTopic);
+            }
         }
     }
 

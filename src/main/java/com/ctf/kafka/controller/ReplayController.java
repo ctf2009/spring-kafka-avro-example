@@ -6,6 +6,7 @@ import com.ctf.kafka.service.ReplayService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ import java.util.regex.Pattern;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "/replay")
+@ConditionalOnProperty(name = "kafka.replay-enabled", havingValue = "true")
 public class ReplayController {
 
     private static final Pattern COORDINATES_REGEX =
