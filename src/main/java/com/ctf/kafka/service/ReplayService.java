@@ -2,7 +2,6 @@ package com.ctf.kafka.service;
 
 import com.ctf.kafka.exception.UnrecoverableException;
 import com.ctf.kafka.model.KafkaMeta;
-import com.ctf.kafka.processor.MessageProcessor;
 import ctf.avro.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,31 +10,41 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.springframework.core.log.LogAccessor;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.listener.ListenerUtils;
+import org.springframework.kafka.listener.*;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
 
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 @Slf4j
 @RequiredArgsConstructor
 public class ReplayService {
 
-    private final ConsumerFactory<String, Message> consumerFactory;
-    private final MessageProcessor messageProcessor;
-    private final String consumerTopic;
+    private final Consumer<?, ?> consumer;
+    private final KafkaListenerEndpointRegistry registry;
+
+    public ReplayService(final ConsumerFactory<?,?> consumerFactory, final KafkaListenerEndpointRegistry registry) {
+        this.consumer = consumerFactory.createConsumer();
+        this.registry = registry;
+    }
 
     public void replayMessage(final KafkaMeta kafkaMeta) {
         log.info("Preparing to replay message {}", kafkaMeta);
-        validateKafkaMeta(kafkaMeta);
 
         final var consumerRecord = getConsumerRecord(kafkaMeta);
         if (consumerRecord != null) {
             checkConsumerRecord(consumerRecord);
-            processConsumerRecord(kafkaMeta, consumerRecord);
+            registry.getAllListenerContainers().stream()
+                    .map(MessageListenerContainer::getContainerProperties)
+                    .filter(properties -> Arrays.asList(Objects.requireNonNull(properties.getTopics())).contains(kafkaMeta.getTopic()))
+                    .map(ContainerProperties::getMessageListener)
+                    .forEach(listener -> processConsumerRecord(listener, kafkaMeta, consumerRecord));
         } else {
             final var errorMessage = String.format("ConsumerRecord not found for KafkaMeta: %s", kafkaMeta);
             log.error(errorMessage);
@@ -43,19 +52,9 @@ public class ReplayService {
         }
     }
 
-    private void validateKafkaMeta(final KafkaMeta kafkaMeta) {
-        if (!consumerTopic.equals(kafkaMeta.getTopic())) {
-            final var errorMessage = String.format(
-                    "Topic '%s' is not supported for retry in this application", kafkaMeta.getTopic());
-
-            log.error(errorMessage);
-            throw new UnrecoverableException(errorMessage);
-        }
-    }
-
-    private ConsumerRecord<String, Message> getConsumerRecord(final KafkaMeta kafkaMeta) {
+    private ConsumerRecord<?, ?> getConsumerRecord(final KafkaMeta kafkaMeta) {
         log.info("Locating ConsumerRecord for KafkaMeta: {}", kafkaMeta);
-        try (final Consumer<String, Message> consumer = consumerFactory.createConsumer()) {
+        try {
             final var topicPartition = new TopicPartition(kafkaMeta.getTopic(), kafkaMeta.getPartition());
             consumer.assign(Collections.singletonList(topicPartition));
             consumer.seek(topicPartition, kafkaMeta.getOffset());
@@ -76,17 +75,28 @@ public class ReplayService {
         }
     }
 
-    private void processConsumerRecord(final KafkaMeta kafkaMeta, final ConsumerRecord<String, Message> consumerRecord) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void processConsumerRecord(final Object messageListener, final KafkaMeta kafkaMeta, final ConsumerRecord<?, ?> consumerRecord) {
         log.info("Replaying ConsumerRecord for KafkaMeta: {}", kafkaMeta);
         try {
-            messageProcessor.processMessage(consumerRecord);
+            if (AcknowledgingConsumerAwareMessageListener.class.isAssignableFrom(messageListener.getClass())) {
+                ((AcknowledgingConsumerAwareMessageListener) messageListener).onMessage(consumerRecord, new NoopAcknowledgement(), consumer);
+            } else if (AcknowledgingMessageListener.class.isAssignableFrom(messageListener.getClass())) {
+                ((AcknowledgingMessageListener) messageListener).onMessage(consumerRecord, new NoopAcknowledgement());
+            } else if (ConsumerAwareMessageListener.class.isAssignableFrom(messageListener.getClass())) {
+                ((ConsumerAwareMessageListener) messageListener).onMessage(consumerRecord, consumer);
+            } else if (MessageListener.class.isAssignableFrom(messageListener.getClass())) {
+                ((MessageListener) messageListener).onMessage(consumerRecord);
+            } else {
+                throw new UnrecoverableException("Message Listener is unsupported");
+            }
         } catch (final Exception exception) {
             log.error("Failed to successfully replay ConsumerRecord for KafkaMeta: {}", kafkaMeta, exception);
             throw new UnrecoverableException("Failed to replay ConsumerRecord for KafkaMeta: " + kafkaMeta, exception);
         }
     }
 
-    private void checkConsumerRecord(final ConsumerRecord<String, Message> consumerRecord) {
+    private void checkConsumerRecord(final ConsumerRecord<?, ?> consumerRecord) {
         if (consumerRecord.value() == null) {
             final var logger = new LogAccessor(LogFactory.getLog(ReplayService.class));
             final var deserializationException =
@@ -100,5 +110,4 @@ public class ReplayService {
             }
         }
     }
-
 }

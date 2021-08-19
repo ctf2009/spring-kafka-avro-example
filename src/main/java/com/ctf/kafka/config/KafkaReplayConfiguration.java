@@ -1,14 +1,13 @@
 package com.ctf.kafka.config;
 
-import com.ctf.kafka.processor.MessageProcessor;
 import com.ctf.kafka.service.ReplayService;
 import ctf.avro.Message;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 @Configuration
@@ -17,10 +16,9 @@ public class KafkaReplayConfiguration {
 
     @Bean
     public ReplayService replayService(final KafkaProperties kafkaProperties,
-                                       final MessageProcessor messageProcessor,
-                                       @Value("${kafka.topics.main-topic}") final String topic) {
+                                       final KafkaListenerEndpointRegistry registry) {
         final var consumerFactory = consumerFactory(kafkaProperties);
-        return new ReplayService(consumerFactory, messageProcessor, topic);
+        return new ReplayService(consumerFactory, registry);
     }
 
     private DefaultKafkaConsumerFactory<String, Message> consumerFactory(final KafkaProperties kafkaProperties) {

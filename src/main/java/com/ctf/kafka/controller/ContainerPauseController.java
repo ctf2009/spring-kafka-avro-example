@@ -22,6 +22,7 @@ public class ContainerPauseController {
 
     @GetMapping(path = "/pause", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> consumersPause() {
+        var containers = this.registry.getAllListenerContainers();
         this.registry.getAllListenerContainers().forEach(MessageListenerContainer::pause);
         return new ResponseEntity<>("Accepted", HttpStatus.ACCEPTED);
     }
