@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.listener.ErrorHandler;
-import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
+import org.springframework.kafka.listener.CommonErrorHandler;
+import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
@@ -23,38 +23,33 @@ public class KafkaListenerConfiguration {
 
     private static final Logger LOG = LoggerFactory.getLogger(KafkaListenerConfiguration.class);
 
-    @Value("${retry.consumer.backoff-ms:1000}")
-    private int backoffMillis;
-
-    @Value("${retry.consumer.max-attempts:10}")
-    private int retryCount;
-
     @Bean
     public ConcurrentKafkaListenerContainerFactory<Object, Object> kafkaListenerContainerFactory(
             ConcurrentKafkaListenerContainerFactoryConfigurer factoryConfigurer,
             ConsumerFactory<Object, Object> kafkaConsumerFactory,
-            ErrorHandler errorHandler) {
+            CommonErrorHandler errorHandler) {
 
         ConcurrentKafkaListenerContainerFactory<Object, Object> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factoryConfigurer.configure(factory, kafkaConsumerFactory);
 
         // No Longer Need to use RetryTemplate & Recovery Callback
-        factory.setErrorHandler(errorHandler);
+        factory.setCommonErrorHandler(errorHandler);
         return factory;
     }
 
     @Bean
-    public ErrorHandler errorHandler() {
-        final var seekToCurrentErrorHandler = new SeekToCurrentErrorHandler((consumerRecord, exception) ->
-                        LOG.warn("Handing Error for consumerRecord {} with exception {}", consumerRecord, exception.getClass()),
-                        // Do any further processing here, Once complete, the recovered Error is committed
-                        new FixedBackOff(backoffMillis, retryCount));
+    public CommonErrorHandler errorHandler(@Value("${retry.consumer.backoff-ms:1000}") final int backoffMillis,
+                                           @Value("${retry.consumer.max-attempts:10}") final int retryCount) {
+        final var errorHandler = new DefaultErrorHandler((consumerRecord, exception) ->
+                LOG.warn("Handing Error for consumerRecord {} with exception {}", consumerRecord, exception.getClass()),
+                // Do any further processing here, Once complete, the recovered Error is committed
+                new FixedBackOff(backoffMillis, retryCount));
 
-        seekToCurrentErrorHandler.setClassifications(exceptionClassifications(), false);
+        errorHandler.setClassifications(exceptionClassifications(), false);
 
         // This is required to be set to true so that failures that are handled are committed
-        seekToCurrentErrorHandler.setCommitRecovered(true);
-        return seekToCurrentErrorHandler;
+        errorHandler.setCommitRecovered(true);
+        return errorHandler;
     }
 
     private Map<Class<? extends Throwable>, Boolean> exceptionClassifications() {

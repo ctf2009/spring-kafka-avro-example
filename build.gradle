@@ -8,8 +8,8 @@ buildscript {
 }
 
 plugins {
-	id 'org.springframework.boot' version '2.4.3'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'org.springframework.boot' version '2.6.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java-library'
 	id 'idea'
 }
@@ -20,8 +20,8 @@ group = 'com.ctf'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_14
-	targetCompatibility = JavaVersion.VERSION_14
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 }
 
 configurations {
