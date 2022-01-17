@@ -104,10 +104,21 @@ In order to populate the password-file correctly you can use the Password Utilit
 
 `docker run --net=host confluentinc/cp-schema-registry:5.5.3 /usr/bin/schema-registry-run-class org.eclipse.jetty.util.security.Password user password`
 
-
 ##### Manually Adding Schemas
 The Consumer / Producer can be set to not auto register the schema (This is usually something that would be disabled in Prod)
 If you choose to disable auto register schema you will need to manually add the schemas to the registry
 
-Original Schema - TODO
-Forward Compatibility evolution of the Schema - TODO
+TODO: Write a Script that can do this from some given inputs
+
+**Set Global Forward Compatibility**
+Its normal to do this on a per-subject basis e.g., using the endpoint http://localhost:8081/config/test-topic-value
+curl -u user:password -X PUT -H "Content-Type: application/vnd.schemaregistry.v1+json" --data '{"compatibility": "FORWARD"}' http://localhost:8081/config
+
+**Original Schema**
+cat message.avsc | jq -c '. | { schema: . | @json }' | curl -u user:password -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" --data-binary @- http://localhost:8081/subjects/test-topic-value/versions
+cat message.avsc | jq -c '. | { schema: . | @json }' | curl -u user:password -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" --data-binary @- http://localhost:8081/subjects/forwarding-topic-value/versions
+
+**Forward Compatibility evolution of the Schema**
+cat message_version2.avsc | jq -c '. | { schema: . | @json }' | curl -u user:password -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" --data-binary @- http://localhost:8081/subjects/test-topic-value/versions
+cat message_version2.avsc | jq -c '. | { schema: . | @json }' | curl -u user:password -X POST -H "Content-Type: application/vnd.schemaregistry.v1+json" --data-binary @- http://localhost:8081/subjects/forwarding-topic-value/versions
+

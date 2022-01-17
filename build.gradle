@@ -39,8 +39,8 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.20'
 	annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
-	implementation "org.apache.avro:avro:1.9.2"
-	implementation 'io.confluent:kafka-avro-serializer:6.1.0'
+	implementation "org.apache.avro:avro:1.10.2"
+	implementation 'io.confluent:kafka-avro-serializer:6.2.0'
 
 	implementation 'org.postgresql:postgresql'
 

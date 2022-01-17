@@ -22,7 +22,7 @@ spring:
 
     properties:
       use.latest.version: false
-      auto.register.schemas: true
+      auto.register.schemas: false
       basic.auth:
         credentials.source: USER_INFO
         user.info: user:password

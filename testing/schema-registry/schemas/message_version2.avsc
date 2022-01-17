@@ -1,11 +1,42 @@
-{"namespace": "ctf.avro",
- "type": "record",
- "name": "Message",
- "fields": [
-     {"name": "priority", "type": "int"},
-     {"name": "content", "type": ["string", "null"]},
-     {"name": "Error", "type": ["null", { "type": "enum", "name": "Error", "symbols": ["RECOVERABLE", "UNRECOVERABLE", "NESTED_RECOVERABLE"] }], "default": null },
-     {"name": "forward", "type": "boolean", "default": false},
-     {"name": "newOptionalField", "type": ["string", "null"]}
- ]
+{
+  "type": "record",
+  "name": "Message",
+  "namespace": "ctf.avro",
+  "fields": [
+    {
+      "name": "priority",
+      "type": "int"
+    },
+    {
+      "name": "content",
+      "type": [
+        {
+          "type": "string",
+          "avro.java.string": "String"
+        },
+        "null"
+      ]
+    },
+    {
+      "name": "Error",
+      "type": [
+        "null",
+        {
+          "type": "enum",
+          "name": "Error",
+          "symbols": [
+            "RECOVERABLE",
+            "UNRECOVERABLE",
+            "NESTED_RECOVERABLE"
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "forward",
+      "type": "boolean",
+      "default": false
+    }
+  ]
 }
