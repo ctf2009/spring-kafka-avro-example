@@ -27,7 +27,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @EmbeddedKafka
 @ExtendWith(MockitoExtension.class)
 @DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
-@AutoConfigureMockMvc
 class KafkaAvroIntegrationTest {
 
     private static final String DEFAULT_MESSAGE_CONTENT = "This is a message";
@@ -38,17 +37,10 @@ class KafkaAvroIntegrationTest {
     @Autowired
     private MessageStore messageStore;
 
-    @Autowired
-    private MockMvc mvc;
-
     @Test
     @DisplayName("A message is sent, consumed and stored successfully")
     void sentMessageIsSuccessfullyProcessed() throws Exception {
-
-
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT);
-        var response = mvc.perform(get("/replay/test-topic-0-0"))
-                .andReturn().getResponse();
         thenMessageStoreShouldHaveCount(1);
     }
 

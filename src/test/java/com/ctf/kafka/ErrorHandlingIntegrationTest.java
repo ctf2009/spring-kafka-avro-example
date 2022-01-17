@@ -4,7 +4,6 @@ import com.ctf.kafka.processor.MessageProcessor;
 import com.ctf.kafka.service.ProducerService;
 import com.ctf.kafka.store.MessageStore;
 import ctf.avro.Error;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +48,7 @@ class ErrorHandlingIntegrationTest {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT, Error.RECOVERABLE);
 
         // 4 = Initial Attempt + 3 Retries
-        verify(messageProcessor, timeout(10000).times(4)).processMessage(any(ConsumerRecord.class));
+        verify(messageProcessor, timeout(10000).times(4)).processMessage(any());
     }
 
     @Test
@@ -58,7 +57,7 @@ class ErrorHandlingIntegrationTest {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT, Error.UNRECOVERABLE);
 
         // 1 = Initial Attempt + 0 Retries
-        verify(messageProcessor, after(10000).times(1)).processMessage(any(ConsumerRecord.class));
+        verify(messageProcessor, after(10000).times(1)).processMessage(any());
     }
 
     @Test
@@ -67,7 +66,7 @@ class ErrorHandlingIntegrationTest {
         givenMessageIsProduced(DEFAULT_MESSAGE_CONTENT, Error.NESTED_RECOVERABLE);
 
         // 4 = Initial Attempt + 3 Retries
-        verify(messageProcessor, timeout(10000).times(4)).processMessage(any(ConsumerRecord.class));
+        verify(messageProcessor, timeout(10000).times(4)).processMessage(any());
     }
 
     private void givenMessageIsProduced(final String messageContent, Error errorToThrow) {
