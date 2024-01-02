@@ -1,0 +1,10 @@
+#!/bin/bash
+input_file="offsets.txt"
+
+while IFS= read -r line; do
+    read -r topic partition offset <<< $(echo "$line" | awk -F'-' '{topic=""; for (i=1; i<=NF-2; i++) topic = topic $i (i<NF-2?"-":""); print topic, $(NF-1), $NF}')
+    echo "TOPIC = $topic"
+    echo "PARTITION = $partition"
+    echo "OFFSET = $offset"
+    echo
+done < "$input_file"
